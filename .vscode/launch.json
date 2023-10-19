@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "by-gdb",
+      "request": "launch",
+      "name": "Chapter2",
+      "program": "${workspaceFolder}/build/Chapter2/OpenXRTutorialChapter2",
+      "cwd":"${workspaceFolder}/Chapter2"
+    }
+  ]
+}
