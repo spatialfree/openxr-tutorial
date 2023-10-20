@@ -22,7 +22,7 @@ layout(location = 1) out flat vec3 o_Normal;
 layout(location = 2) out flat vec3 o_Color;
 void main() {
     gl_Position = modelViewProj * a_Positions;
-    int face = gl_VertexIndex / 6;
+    int face = gl_VertexID / 6;
     o_TexCoord = uvec2(face, 0);
     o_Normal = (model * normals[face]).xyz;
     o_Color = color.rgb;
