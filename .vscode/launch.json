@@ -4,16 +4,9 @@
     {
       "type": "by-gdb",
       "request": "launch",
-      "name": "Chapter2",
-      "program": "${workspaceFolder}/build/Chapter2/OpenXRTutorialChapter2",
-      "cwd":"${workspaceFolder}/Chapter2"
-    },
-    {
-      "type": "by-gdb",
-      "request": "launch",
-      "name": "Chapter3",
-      "program": "${workspaceFolder}/build/Chapter3/OpenXRTutorialChapter3",
-      "cwd":"${workspaceFolder}/Chapter3"
+      "name": "openxr-tutorial",
+      "program": "${workspaceFolder}/build/openxr-tutorial",
+      "cwd":"${workspaceFolder}/build"
     }
   ]
 }

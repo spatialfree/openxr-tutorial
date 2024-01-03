@@ -2,6 +2,8 @@
 #include <GraphicsAPI_OpenGL.h>
 #include <OpenXRDebugUtils.h>
 
+#include <steam/steam_api.h>
+
 // include xr linear algebra for XrVector and XrMatrix classes.
 #include <xr_linear_algebra.h>
 // Declare some useful operators for vectors:
@@ -26,7 +28,36 @@ public:
   }
   ~OpenXRTutorial() = default;
 
+  // void OverrideAuthenticationForDevelopment() {
+  //   uint32_t YourDevSteamID = ;
+
+  //   // Set a unique development Steam ID for testing
+  //   CSteamID steamIDDev;
+  //   steamIDDev.Set(YourDevSteamID, k_EUniversePublic, k_EAccountTypeAnonGameServer);
+
+  //   // Set the dummy Steam ID as the current user
+  //   SteamUser()->Set
+
+  //   // Force the Steam user to be "logged in" during development
+  //   SteamAPI_SetTryCatchCallbacksDuringInit(true);
+  //   SteamAPI_SetTryCatchCallbacksDuringRun(true);
+  //   SteamAPI_SetMiniDumpComment("Override SteamID for development");
+  // }
+
+
   void Run() {
+    // SteamAPI_Init();
+
+    // if (!SteamUser()->BLoggedOn()) {
+    //   // The user is not logged in, handle accordingly
+    //   // For development, you might want to implement a workaround or allow
+    //   // certain features to be accessible without authentication.
+    //   std::cout << "Steam user not logged in." << std::endl;
+    // } else {
+    //   // The user is logged in, continue with your game logic
+    //   std::cout << "Steam user logged in." << std::endl;
+    // }
+
     CreateInstance();
     CreateDebugMessenger();
 
@@ -57,6 +88,8 @@ public:
 
     DestroyDebugMessenger();
     DestroyInstance();
+
+    // SteamAPI_Shutdown();
   }
 
 private:
@@ -525,10 +558,19 @@ private:
       XrMatrix4x4f_Multiply(&cameraConstants.viewProj, &proj, &view);
 
       renderCuboidIndex = 0;
-      // Draw a floor. Scale it by 2 in the X and Z, and 0.1 in the Y,
-      RenderCuboid({{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f, -m_viewHeightM, 0.0f}}, {2.0f, 0.1f, 2.0f}, {0.4f, 0.5f, 0.5f});
-      // Draw a "table".
-      RenderCuboid({{0.0f, 0.0f, 0.0f, 1.0f}, {0.0f, -m_viewHeightM + 0.9f, -0.7f}}, {1.0f, 0.2f, 1.0f}, {0.6f, 0.6f, 0.4f});
+      // draw a small cube out past the origin
+      // {0.0f, 0.0f, 0.0f, 1.0f}
+      XrQuaternionf ori = {0.0f, 0.0f, 0.0f, 1.0f};
+      // spin around y axis
+      XrQuaternionf rot = {0.0f, 0.0f, 0.0f, 1.0f};
+      XrVector3f axis = {0.0f, 0.0f, -1.0f};
+      // from int64_t viewLocateInfo.displayTime to float time
+      float time = (float)viewLocateInfo.displayTime / 1000000000.0f;
+      float TAU = 6.28318530718f;
+      XrQuaternionf_CreateFromAxisAngle(&rot, &axis, TAU * time); // 1 rev per sec
+      // XrQuaternionf_Multiply(&ori, &ori, &rot);
+      RenderCuboid({rot, {0.0f, sin(time * 0.1f) * 0.1f, -0.5f}}, {0.1f, 0.1f, 0.1f}, {0.5f, 0.5f, 0.5f});
+      
 
 
       m_graphicsAPI->EndRendering();
@@ -594,10 +636,12 @@ private:
       {+0.5f, +0.5f, -0.5f, 1.0f},
       {+0.5f, -0.5f, +0.5f, 1.0f},
       {+0.5f, -0.5f, -0.5f, 1.0f},
+
       {-0.5f, +0.5f, +0.5f, 1.0f},
       {-0.5f, +0.5f, -0.5f, 1.0f},
       {-0.5f, -0.5f, +0.5f, 1.0f},
-      {-0.5f, -0.5f, -0.5f, 1.0f}};
+      {-0.5f, -0.5f, -0.5f, 1.0f}
+    };
 
 #define CUBE_FACE(V1, V2, V3, V4, V5, V6) vertexPositions[V1], vertexPositions[V2], vertexPositions[V3], vertexPositions[V4], vertexPositions[V5], vertexPositions[V6],
 
